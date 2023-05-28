@@ -33,7 +33,7 @@ async function run() {
     const menuCollection = client.db("bistroDb").collection("menu");
     app.get('/menu', async(req, res) => {
       const result = await menuCollection.find().toArray();
-      res.send(result)
+      res.send(result);
     })
 
 
