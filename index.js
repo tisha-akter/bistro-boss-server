@@ -89,7 +89,23 @@ async function run() {
       const query = {_id: new ObjectId(id)};
       const result = await usersCollection.deleteOne(query);
       res.send(result);
-    } )
+    } );
+
+    // security layer: verifyJWT 
+    app.get('/users/admin/:email', verifyJWT, async(req, res) => {
+      const email = req.params.email;
+
+      // security layer: email same 
+      if(req.decoded.email !== email){
+        res.send({ admin: false })
+      }
+
+      // security layer: check admin 
+      const query = { email: email}
+      const user = await usersCollection.findOne(query);
+      const result = {admin: user?.role === 'admin'}
+      res.send(result);
+    })
 
     app.patch('/users/admin/:id', async (req, res) => {
       const id = req.params.id;
