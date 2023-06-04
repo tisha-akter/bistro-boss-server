@@ -25,7 +25,7 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   }
 });
-
+ 
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
@@ -35,6 +35,13 @@ async function run() {
     const usersCollection = client.db("bistroDb").collection("users");
     const reviewCollection = client.db("bistroDb").collection("reviews");
     const cartCollection = client.db("bistroDb").collection("carts");
+
+    app.post('/jwt', (req, res) => {
+      const user = req.body;
+      const token = jwt.sign(user, env.process.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
+
+      res.send({ token })
+    })
 
 
     // users related apis 
