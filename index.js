@@ -144,6 +144,12 @@ async function run() {
       res.send(result);
     })
 
+    app.post('/menu', async(req, res) => {
+      const newItem = req.body;
+      const result = await menuCollection.insertOne(newItem)
+      res.send(result);
+    })
+
     // review related api 
     app.get('/reviews', async(req, res) => {
       const result = await reviewCollection.find().toArray();
