@@ -55,6 +55,7 @@ async function run() {
     const usersCollection = client.db("bistroDb").collection("users");
     const reviewCollection = client.db("bistroDb").collection("reviews");
     const cartCollection = client.db("bistroDb").collection("carts");
+    const paymentCollection = client.db("bistroDb").collection("payments");
 
     // Token 
     app.post('/jwt', (req, res) => {
@@ -201,9 +202,12 @@ async function run() {
     } )
 
     // create payment intent 
-    app.post('/create-payment-intent', async(req, res) => {
+    app.post('/create-payment-intent', verifyJWT, async(req, res) => {
       const {price} = req.body;
+
       const amount = price*100;
+      // console.log(price, amount)
+
       const paymentIntent = await stripe.paymentIntents.create({
         amount: amount,
         currency: 'usd',
@@ -213,6 +217,15 @@ async function run() {
         clientSecret: paymentIntent.client_secret
       })
     })
+
+
+    // payment related api 
+    app.post('/payments', verifyJWT, async(req, res) => {
+      const payment = req.body;
+      const result = await paymentCollection.insertOne(payment);
+      res.send(result)
+    })
+
 
 
 
@@ -239,7 +252,7 @@ app.listen(port, () => {
 
 
 /**
- * _______________________
+ * _______________________n
  * Naming convention
  * _______________________
  * 
